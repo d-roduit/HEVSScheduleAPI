@@ -1,0 +1,3 @@
+const isClassValid = (class) => {
+
+};
