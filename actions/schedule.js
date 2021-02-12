@@ -9,7 +9,7 @@ const get = async (req, res) => {
 
     // Check class parameter
 
-    let isClassValid = false;
+    let isValidClass = false;
     let classValue = null;
 
     if (req.params.class.trim() != '' && req.params.class.length < 100) {
@@ -17,21 +17,21 @@ const get = async (req, res) => {
 
         for (const option of classesSelectElement.children) {
             if (req.params.class === option.text) {
-                isClassValid = true;
+                isValidClass = true;
                 classValue = option.value;
                 break;
             }
         }
     }
 
-    if (!isClassValid) {
-        return res.status(404).json({ message: `No schedule found for the given class parameter '${req.params.class}'`});
+    if (!isValidClass) {
+        return res.status(404).json({ message: `Invalid class parameter '${req.params.class}'`});
     }
 
     // Class is valid, we check if a date has been given
 
     let hasDate = false;
-    let isDateValid = false;
+    let isValidDate = false;
     let isWeekDate = false;
     let isDayDate = false;
 
@@ -41,34 +41,41 @@ const get = async (req, res) => {
         hasDate = true;
 
         const weekRegex = new RegExp('^[1-5]?[0-9]$');
-        const dayRegex = new RegExp('^[0-3][0-9]-[0-1][0-9]-20[2-9][0-9]$');
+        const dayRegex = new RegExp('^20[2-9][0-9]-[0-1][0-9]-[0-3][0-9]$');
 
         if (weekRegex.test(dateParam)) {
-            const weekNumber = parseInt(dateParam);
+            const weekNumberGiven = parseInt(dateParam);
+            const currentWeekNumber = dateUtility.getWeek();
 
-            if (weekNumber >= 0 && weekNumber <= 52) {
-                isDateValid = true;
+            if (weekNumberGiven >= currentWeekNumber && weekNumberGiven <= 52) {
+                isValidDate = true;
                 isWeekDate = true;
             }
         } else if (dayRegex.test(dateParam)) {
-            const dateParamArray = dateParam.split('-');
-            const day = parseInt(dateParamArray[0]);
-            const month = parseInt(dateParamArray[1]);
-            const year = parseInt(dateParamArray[2]);
+            // The given date string respects the ISO date format, we check if the date is a valid date
 
-            const currentDate = new Date();
-            const currentMonth = currentDate.getMonth() + 1;
-            const currentYear = currentDate.getFullYear();
+            const dateGiven = new Date(dateParam);
 
-            if (day <= 31 && month >= currentMonth && month <= 12 && (year == currentYear || year == currentYear + 1)) {
-                isDateValid = true;
-                isDayDate = true;
+            if (dateUtility.isValidDate(dateGiven)) {
+                const year = dateGiven.getFullYear();
+
+                const currentDate = new Date();
+                currentDate.setUTCHours(0,0,0,0);
+                const currentYear = currentDate.getFullYear();
+
+                if (dateGiven >= currentDate && year === currentYear) {
+                    isValidDate = true;
+                    isDayDate = true;
+                }
             }
         }
     }
 
-    if (hasDate && !isDateValid) {
-        return res.status(404).json({ message: `No schedule found for the given date parameter '${dateParam}'`});
+    console.log(`isValidDate : ${isValidDate}`)
+    console.log(`hasDate : ${hasDate}`)
+
+    if (hasDate && !isValidDate) {
+        return res.status(404).json({ message: `Invalid date parameter '${dateParam}'`});
     }
 
     // Class is valid and Date is either valid or not given in parameter
@@ -76,11 +83,12 @@ const get = async (req, res) => {
     let scheduleDate;
 
     if (!hasDate) {
+        // Put a default date as the scheduleDate to search
         scheduleDate = dateUtility.toSiteFormat(new Date());
         isDayDate = true;
     } else {
         if (isDayDate) {
-            scheduleDate = dateParam.replace(/-/g, '.');
+            scheduleDate = dateUtility.toSiteFormat(new Date(dateParam));
         } else if (isWeekDate) {
             scheduleDate = dateParam;
         }

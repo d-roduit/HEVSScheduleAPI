@@ -30,6 +30,8 @@
 //     ]
 // }
 
+const { text } = require("express");
+
 // {
 //     "week": "8",
 //     "days": [
@@ -67,8 +69,8 @@
 //     ]
 // }
 
-const addInformationToSchedule = (courseElement, schedule) => {
-    if (!courseElement.classList.contains('Ligne0') && !courseElement.classList.contains('Ligne1')) {
+const addCoursesToDaySchedule = (courseElement, schedule) => {
+    if (courseElement.className !== 'Ligne0' && courseElement.className !== 'Ligne1') {
         return;
     }
 
@@ -87,6 +89,7 @@ const addInformationToSchedule = (courseElement, schedule) => {
             location: location,
             courseTitle: courseTitle
         });
+
     } else {
         const courseElementLength = courseElement.children.length;
 
@@ -99,11 +102,43 @@ const addInformationToSchedule = (courseElement, schedule) => {
         schedule.push(courseInformation);
     }
 
-    addInformationToSchedule(courseElement.nextElementSibling, schedule);
+    addCoursesToDaySchedule(courseElement.nextElementSibling, schedule);
+}
+
+const addDaysToWeekSchedule = (tableRowElement, weekSchedule) => {
+    if (tableRowElement.className === '') {
+        return;
+    }
+
+    if (tableRowElement.className === 'HeaderDay') {
+
+        console.log('HeaderDay className found !');
+
+        const textData = tableRowElement.firstElementChild.textContent;
+        const dayDate = textData.substring(textData.length - 10, textData.length);
+
+        console.log(`textData : ${textData}`);
+        console.log(`dayDate : ${dayDate}`);
+
+        const daySchedule = {
+            date: dayDate,
+            courses: []
+        };
+
+        console.log(`daySchedule before call : ${daySchedule}`);
+
+        addCoursesToDaySchedule(tableRowElement.nextElementSibling, daySchedule);
+
+        console.log(`daySchedule after call : ${daySchedule}`);
+
+        weekSchedule.days.push(daySchedule);
+    }
+
+    addDaysToWeekSchedule(tableRowElement.nextElementSibling, weekSchedule);
 }
 
 const getScheduleForDay = (htmlDocument, date) => {
-    const schedule = {
+    const daySchedule = {
         date: date,
         courses: []
     };
@@ -124,10 +159,10 @@ const getScheduleForDay = (htmlDocument, date) => {
         return {};
     }
 
-    // Add to schedule in a recursive manner the information from each course element found after the corresponding date element
-    addInformationToSchedule(correspondingDateElement.nextElementSibling, schedule);
+    // Add to daySchedule in a recursive manner the information from each course element found after the corresponding date element
+    addCoursesToDaySchedule(correspondingDateElement.nextElementSibling, daySchedule);
 
-    return schedule;
+    return daySchedule;
 };
 
 const getScheduleForWeek = (htmlDocument, weekNumber) => {
@@ -138,6 +173,8 @@ const getScheduleForWeek = (htmlDocument, weekNumber) => {
     };
 
     const dateElements = htmlDocument.querySelectorAll(".HeaderWeek");
+
+    console.log(`nb headerWeek : ${dateElements.length}`);
 
     let correspondingDateElement = null;
 
@@ -153,10 +190,12 @@ const getScheduleForWeek = (htmlDocument, weekNumber) => {
         return {};
     }
 
-    // // Add to schedule in a recursive manner the information from each course element found after the corresponding date element
-    // addInformationToSchedule(correspondingDateElement.nextElementSibling, schedule);
+    // Add each day and its courses to the week schedule
+    addDaysToWeekSchedule(correspondingDateElement.nextElementSibling, weekSchedule);
 
-    // return weekSchedule;
+    console.log(`weekSchedule : ${weekSchedule}`);
+
+    return weekSchedule;
 };
 
 

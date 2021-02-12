@@ -1,3 +1,7 @@
+const isValidDate = (date) => {
+    return date instanceof Date && !isNaN(date);
+  }
+
 const toApiParamFormat = (dateToFormat) => {
     const date = new Date(dateToFormat);
 
@@ -8,7 +12,7 @@ const toApiParamFormat = (dateToFormat) => {
     if (month < 10) month = '0' + month;
     if (day < 10) day = '0' + day;
 
-    return `${day}-${month}-${year}`;
+    return `${year}-${month}-${day}`;
 }
 
 const toSiteFormat = (dateToFormat) => {
@@ -35,4 +39,4 @@ const getWeek = () => {
     return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
 }
 
-module.exports = { toApiParamFormat, toSiteFormat, getWeek };
+module.exports = { isValidDate, toApiParamFormat, toSiteFormat, getWeek };
