@@ -3,6 +3,7 @@ const fetch = require('node-fetch');
 const jsdom = require("jsdom");
 const dateUtility = require('../utility/dateUtility');
 const scheduleUtility = require('../utility/scheduleUtility');
+const config = require('../config.json');
 
 const get = async (req, res) => {
     const indexPageDocument = res.locals.indexPageDocument;
@@ -125,19 +126,19 @@ const get = async (req, res) => {
         form.append(key, requestData[key]);
     }
 
-    const url = "http://apps.hevs.ch/untis/horaireintra.aspx";
+    const hevsSiteURL = config.hevsSiteURL;
 
     let htmlDocument;
 
     try {
-        const fetchResponse = await fetch(url, {
+        const fetchResponse = await fetch(hevsSiteURL, {
             method: "POST",
             body: form
         });
 
         if (!fetchResponse.ok) {
             // TODO: Log error
-            return res.status(500).json({ message: `POST request to ${url} failed.`});
+            return res.status(500).json({ message: `POST request to ${hevsSiteURL} failed.`});
         }
 
         const htmlText = await fetchResponse.text();

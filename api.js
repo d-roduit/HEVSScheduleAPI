@@ -1,7 +1,8 @@
 // TODO: Pour améliorer les performances, il faudrait que les classes soient stockées dans un fichier
 // et updated chaque 30 min OU chaque fois qu'on récupère les classes via la fonction "classes.list()".
 
-// TODO: Mettre l'url du site qu'on fetch en variable d'environnement, pour que ce soit simple à changer si besoin.
+const dotenv = require('dotenv');
+dotenv.config();
 
 const express = require('express');
 const classes = require('./actions/classes');
@@ -9,7 +10,7 @@ const schedule = require('./actions/schedule');
 const site = require('./actions/site');
 
 const api = express();
-const port = 3000;
+const port = process.env.PORT;
 
 api.listen(port, () => {
     console.log(`HEVS Schedule API listening at http://localhost:${port}`);

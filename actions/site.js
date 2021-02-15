@@ -1,14 +1,15 @@
 const fetch = require('node-fetch');
-const jsdom = require("jsdom");
+const jsdom = require('jsdom');
+const config = require('../config.json');
 
 const loadIndexPage = async (req, res, next) => {
-    const url = "http://apps.hevs.ch/untis/horaireintra.aspx";
+    const hevsSiteURL = config.hevsSiteURL;
 
-    const fetchResponse = await fetch(url);
+    const fetchResponse = await fetch(hevsSiteURL);
 
     if (!fetchResponse.ok) {
         // TODO: Log error
-        return res.status(500).json({ message: `GET request to ${url} failed.`});
+        return res.status(500).json({ message: `GET request to ${hevsSiteURL} failed.`});
     }
 
     const htmlText = await fetchResponse.text();
