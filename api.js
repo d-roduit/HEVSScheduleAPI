@@ -1,8 +1,10 @@
 // TODO: Pour améliorer les performances, il faudrait que les classes soient stockées dans un fichier
 // et updated chaque 30 min OU chaque fois qu'on récupère les classes via la fonction "classes.list()".
 
-const dotenv = require('dotenv');
-dotenv.config();
+if (process.env.NODE_ENV !== 'production') {
+    const dotenv = require('dotenv');
+    dotenv.config();
+}
 
 const express = require('express');
 const classes = require('./actions/classes');
