@@ -10,7 +10,8 @@ const fs = require('fs');
 
 const logsDirectory = './logs';
 
-if (!fs.existsSync(logsDirectory)){
+if (!fs.existsSync(logsDirectory)) {
+    console.log('logsDirectory does not exist... Creating it...');
     fs.mkdirSync(logsDirectory);
 }
 
@@ -40,7 +41,11 @@ const logger = pino({
 
         return `,"time":"${new Date(Date.now()).toLocaleDateString('en', options)}"`;
     }
-}, `./logs/${logFileFilename}`);
+}, `${logsDirectory}/${logFileFilename}`);
+
+const expressPino = require('express-pino-logger')({
+    logger: logger
+});
 const express = require('express');
 const classes = require('./actions/classes');
 const schedule = require('./actions/schedule');
@@ -49,15 +54,11 @@ const site = require('./actions/site');
 const api = express();
 const port = process.env.PORT;
 
+api.use(expressPino);
+
 api.listen(port, () => {
     console.log(`HEVS Schedule API listening at http://localhost:${port}`);
     logger.info(`HEVS Schedule API listening at http://localhost:${port}`);
-});
-
-api.use('/', (req, res, next) => {
-    // TODO: Log
-    // console.log(`${req.originalUrl} requested at : ${Date.now()}`);
-    next();
 });
 
 /**
