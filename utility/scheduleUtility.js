@@ -1,71 +1,81 @@
-// {
-//     "date": "22.02.2021",
-//     "courses": [
-//         {
-//             "startTime": "08:30:00",
-//             "endTime": "10:00:00",
-//             "classes": [
-//                 "604_F",
-//                 "604_D"
-//             ],
-//             "teachers": [
-//                 "Schumacher M"
-//             ],
-//             "location": "Bellevue 209",
-//             "courseTitle": "644-1 Mobile Developement"
-//         },
-//         {
-//             "startTime": "10:20:00",
-//             "endTime": "11:05:00",
-//             "classes": [
-//                 "604_F",
-//                 "604_D"
-//             ],
-//             "teachers": [
-//                 "Schumacher M"
-//             ],
-//             "location": "Bellevue 209",
-//             "courseTitle": "644-1 Cloud "
-//         }
-//     ]
-// }
+/*
+    --------------------------------------
+    JSON schemas of the schedule responses
+    --------------------------------------
 
-// {
-//     "week": "8",
-//     "days": [
-//         {
-//             "date": "22.02.2021",
-//             "courses": [
-//                 {
-//                     "startTime": "08:30:00",
-//                     "endTime": "10:00:00",
-//                     "classes": [
-//                         "604_F",
-//                         "604_D"
-//                     ],
-//                     "teachers": [
-//                         "Schumacher M"
-//                     ],
-//                     "location": "Bellevue 209",
-//                     "courseTitle": "644-1 Mobile Developement"
-//                 },
-//                 {
-//                     "startTime": "10:20:00",
-//                     "endTime": "11:05:00",
-//                     "classes": [
-//                         "604_F",
-//                         "604_D"
-//                     ],
-//                     "teachers": [
-//                         "Schumacher M"
-//                     ],
-//                     "location": "Bellevue 209",
-//                     "courseTitle": "644-1 Cloud "
-//                 }
-//             ]
-//         }
-//     ]
-// }
+    For a day schedule:
+
+    {
+        "date": "22.02.2021",
+        "courses": [
+            {
+                "startTime": "08:30:00",
+                "endTime": "10:00:00",
+                "classes": [
+                    "604_F",
+                    "604_D"
+                ],
+                "teachers": [
+                    "Schumacher M"
+                ],
+                "location": "Bellevue 209",
+                "courseTitle": "644-1 Mobile Developement"
+            },
+            {
+                "startTime": "10:20:00",
+                "endTime": "11:05:00",
+                "classes": [
+                    "604_F",
+                    "604_D"
+                ],
+                "teachers": [
+                    "Schumacher M"
+                ],
+                "location": "Bellevue 209",
+                "courseTitle": "644-1 Cloud "
+            }
+        ]
+    }
+
+    For a week schedule:
+
+    {
+        "week": "8",
+        "days": [
+            {
+                "date": "22.02.2021",
+                "courses": [
+                    {
+                        "startTime": "08:30:00",
+                        "endTime": "10:00:00",
+                        "classes": [
+                            "604_F",
+                            "604_D"
+                        ],
+                        "teachers": [
+                            "Schumacher M"
+                        ],
+                        "location": "Bellevue 209",
+                        "courseTitle": "644-1 Mobile Developement"
+                    },
+                    {
+                        "startTime": "10:20:00",
+                        "endTime": "11:05:00",
+                        "classes": [
+                            "604_F",
+                            "604_D"
+                        ],
+                        "teachers": [
+                            "Schumacher M"
+                        ],
+                        "location": "Bellevue 209",
+                        "courseTitle": "644-1 Cloud "
+                    }
+                ]
+            }
+        ]
+    }
+*/
 
 const addCoursesToDaySchedule = (courseElement, schedule) => {
     if (courseElement.className !== 'Ligne0' && courseElement.className !== 'Ligne1') {
