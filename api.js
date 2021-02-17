@@ -15,6 +15,8 @@ if (!fs.existsSync(logsDirectory)) {
     fs.mkdirSync(logsDirectory);
 }
 
+console.log(`directory exists now : ${fs.existsSync(logsDirectory)}`);
+
 const currentDate = new Date();
 const logFileFilename = `${currentDate.getMonth()+1 < 10 ? `0${currentDate.getMonth()+1}` : currentDate.getMonth()+1}-${currentDate.getFullYear()}-api.log`;
 
