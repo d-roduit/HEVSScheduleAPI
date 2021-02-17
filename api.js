@@ -6,6 +6,41 @@ if (process.env.NODE_ENV !== 'production') {
     dotenv.config();
 }
 
+const fs = require('fs');
+
+const logsDirectory = './logs';
+
+if (!fs.existsSync(logsDirectory)){
+    fs.mkdirSync(logsDirectory);
+}
+
+const currentDate = new Date();
+const logFileFilename = `${currentDate.getMonth()+1 < 10 ? `0${currentDate.getMonth()+1}` : currentDate.getMonth()+1}-${currentDate.getFullYear()}-api.log`;
+
+const pino = require('pino');
+const logger = pino({
+    name: 'apiLogger',
+    formatters: {
+        level (label, number) {
+            return { level: label }
+        }
+    },
+    timestamp: () => {
+        const options = {
+            hourCycle: 'h24',
+            weekday: "short",
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            timeZoneName: 'short'
+        };
+
+        return `,"time":"${new Date(Date.now()).toLocaleDateString('en', options)}"`;
+    }
+}, `./logs/${logFileFilename}`);
 const express = require('express');
 const classes = require('./actions/classes');
 const schedule = require('./actions/schedule');
@@ -16,6 +51,7 @@ const port = process.env.PORT;
 
 api.listen(port, () => {
     console.log(`HEVS Schedule API listening at http://localhost:${port}`);
+    logger.info(`HEVS Schedule API listening at http://localhost:${port}`);
 });
 
 api.use('/', (req, res, next) => {
