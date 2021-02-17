@@ -8,7 +8,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 const fs = require('fs');
 
-const logsDirectory = './logs';
+const logsDirectory = 'apiLogs';
 
 if (!fs.existsSync(logsDirectory)) {
     console.log('logsDirectory does not exist... Creating it...');
