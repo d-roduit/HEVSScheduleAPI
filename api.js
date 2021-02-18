@@ -8,14 +8,11 @@ if (process.env.NODE_ENV !== 'production') {
 
 const fs = require('fs');
 
-const logsDirectory = 'apiLogs';
+const logsDirectory = './logs';
 
 if (!fs.existsSync(logsDirectory)) {
-    console.log('logsDirectory does not exist... Creating it...');
     fs.mkdirSync(logsDirectory);
 }
-
-console.log(`directory exists now : ${fs.existsSync(logsDirectory)}`);
 
 const currentDate = new Date();
 const logFileFilename = `${currentDate.getMonth()+1 < 10 ? `0${currentDate.getMonth()+1}` : currentDate.getMonth()+1}-${currentDate.getFullYear()}-api.log`;
@@ -59,8 +56,8 @@ const port = process.env.PORT;
 api.use(expressPino);
 
 api.listen(port, () => {
-    console.log(`HEVS Schedule API listening at http://localhost:${port}`);
-    logger.info(`HEVS Schedule API listening at http://localhost:${port}`);
+    console.log(`HEVS Schedule API listening on port ${port}`);
+    logger.info(`HEVS Schedule API listening on port ${port}`);
 });
 
 /**
