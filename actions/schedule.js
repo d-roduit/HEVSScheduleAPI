@@ -72,8 +72,8 @@ const get = async (req, res) => {
         }
     }
 
-    console.log(`isValidDate : ${isValidDate}`)
-    console.log(`hasDate : ${hasDate}`)
+    // console.log(`isValidDate : ${isValidDate}`)
+    // console.log(`hasDate : ${hasDate}`)
 
     if (hasDate && !isValidDate) {
         return res.status(404).json({ message: `Invalid date parameter '${dateParam}'`});
@@ -154,10 +154,10 @@ const get = async (req, res) => {
     let jsonSchedule = {};
 
     if (isDayDate) {
-        console.log('getScheduleForDay');
+        // console.log(`getScheduleForDay (${scheduleDate})`);
         jsonSchedule = scheduleUtility.getScheduleForDay(htmlDocument, scheduleDate);
     } else if (isWeekDate) {
-        console.log('getScheduleForWeek');
+        // console.log(`getScheduleForWeek (${scheduleDate})`);
         jsonSchedule = scheduleUtility.getScheduleForWeek(htmlDocument, scheduleDate);
     }
 

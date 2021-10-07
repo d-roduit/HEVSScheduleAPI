@@ -82,6 +82,14 @@ const addCoursesToDaySchedule = (courseElement, schedule) => {
         return;
     }
 
+    /*
+        Remove the useless study field icon so that for the following operations, we can have only the 5 useful children
+        and thus label the corresponding fields accordingly.
+    */
+    courseElement.removeChild(courseElement.children[0]);
+
+    let courseInformation = {};
+
     if (courseElement.children.length === 5) {
         const [startTime, endTime] = courseElement.children[0].textContent.split('·').map(value => value.trim());
         const classes = courseElement.children[1].textContent.split('•').map(value => value.trim());
@@ -89,26 +97,24 @@ const addCoursesToDaySchedule = (courseElement, schedule) => {
         const location = courseElement.children[3].textContent.trim();
         const courseTitle = courseElement.children[4].textContent.trim();
 
-        schedule.courses.push({
+        courseInformation = {
             startTime: startTime,
             endTime: endTime,
             classes: classes,
             teachers: teachers,
             location: location,
             courseTitle: courseTitle
-        });
+        };
 
     } else {
         const courseElementLength = courseElement.children.length;
 
-        let courseInformation = {};
-
         for (let i = 0; i < courseElementLength; i++) {
             courseInformation[i] = courseElement.children[i].textContent;
         }
-
-        schedule.push(courseInformation);
     }
+
+    schedule.courses.push(courseInformation);
 
     addCoursesToDaySchedule(courseElement.nextElementSibling, schedule);
 }

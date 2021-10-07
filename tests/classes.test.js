@@ -9,9 +9,10 @@ describe("GET /classes/", () => {
 
         const jsonData = response.body;
 
-        expect(jsonData).to.be.an('array').that.is.not.empty;
-        expect(jsonData[0]).to.be.an('object')
-        expect(jsonData[0]).to.have.property('value').that.is.a('string');
-        expect(jsonData[0]).to.have.property('text').that.is.a('string');
+        expect(jsonData).to.be.an('object');
+        expect(jsonData.classes).to.be.an('array').that.is.not.empty;
+        expect(jsonData.classes[0]).to.be.an('object')
+        expect(jsonData.classes[0]).to.have.property('value').that.is.a('string');
+        expect(jsonData.classes[0]).to.have.property('text').that.is.a('string');
     });
 });
