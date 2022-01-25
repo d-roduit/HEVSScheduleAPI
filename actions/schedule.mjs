@@ -1,9 +1,10 @@
-const FormData = require('form-data');
-const fetch = require('node-fetch');
-const jsdom = require("jsdom");
-const dateUtility = require('../utility/dateUtility');
-const scheduleUtility = require('../utility/scheduleUtility');
-const config = require('../config.json');
+import fetch from 'node-fetch';
+import { JSDOM } from "jsdom";
+import dateUtility from '../utility/dateUtility.mjs';
+import scheduleUtility from '../utility/scheduleUtility.mjs';
+import { readFile } from 'node:fs/promises';
+
+const config = JSON.parse(await readFile(new URL('../config.json', import.meta.url)));
 
 const get = async (req, res) => {
     const indexPageDocument = res.locals.indexPageDocument;
@@ -120,10 +121,10 @@ const get = async (req, res) => {
         'DropDownListSalles': inputValues.classroom
     }
 
-    const form = new FormData();
+    const formParams = new URLSearchParams();
 
     for (const key in requestData) {
-        form.append(key, requestData[key]);
+        formParams.append(key, requestData[key]);
     }
 
     const hevsSiteURL = config.hevsSiteURL;
@@ -133,7 +134,7 @@ const get = async (req, res) => {
     try {
         const fetchResponse = await fetch(hevsSiteURL, {
             method: "POST",
-            body: form
+            body: formParams
         });
 
         if (!fetchResponse.ok) {
@@ -143,7 +144,7 @@ const get = async (req, res) => {
 
         const htmlText = await fetchResponse.text();
 
-        htmlDocument = new jsdom.JSDOM(htmlText).window.document;
+        htmlDocument = new JSDOM(htmlText).window.document;
     } catch (err) {
         // TODO: Log error
         return res.status(500).json({ message: err.message });
@@ -164,4 +165,4 @@ const get = async (req, res) => {
     return res.status(200).json(jsonSchedule);
 };
 
-module.exports = { get };
+export default { get };

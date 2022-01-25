@@ -1,12 +1,15 @@
 // TODO: Pour améliorer les performances, il faudrait que les classes soient stockées dans un fichier
 // et updated chaque 30 min OU chaque fois qu'on récupère les classes via la fonction "classes.list()".
 
-if (process.env.NODE_ENV !== 'production') {
-    const dotenv = require('dotenv');
-    dotenv.config();
-}
-
-const fs = require('fs');
+import 'dotenv/config'
+import fs from 'node:fs';
+import pino from 'pino';
+import pinoMultiStream from 'pino-multi-stream';
+import expressPinoLogger from 'express-pino-logger';
+import express from 'express';
+import classes from './actions/classes.mjs';
+import schedule from './actions/schedule.mjs';
+import site from './actions/site.mjs';
 
 const logsDirectory = './logs';
 
@@ -16,8 +19,11 @@ if (!fs.existsSync(logsDirectory)) {
 
 const currentDate = new Date();
 const logFileFilename = `${currentDate.getMonth()+1 < 10 ? `0${currentDate.getMonth()+1}` : currentDate.getMonth()+1}-${currentDate.getFullYear()}-api.log`;
+const loggerStreams = [
+    // { stream: process.stdout }, // Uncomment it to enable logging in console
+    { stream: fs.createWriteStream(`${logsDirectory}/${logFileFilename}`, { flags: 'a' }) },
+];
 
-const pino = require('pino');
 const logger = pino({
     name: 'apiLogger',
     formatters: {
@@ -40,15 +46,9 @@ const logger = pino({
 
         return `,"time":"${new Date(Date.now()).toLocaleDateString('en', options)}"`;
     }
-}, `${logsDirectory}/${logFileFilename}`);
+}, pinoMultiStream.multistream(loggerStreams));
 
-const expressPino = require('express-pino-logger')({
-    logger: logger
-});
-const express = require('express');
-const classes = require('./actions/classes');
-const schedule = require('./actions/schedule');
-const site = require('./actions/site');
+const expressPino = expressPinoLogger({ logger: logger });
 
 const api = express();
 const port = process.env.PORT;
@@ -77,4 +77,4 @@ api.get('/schedule/:class/:date', site.loadIndexPage, schedule.get);
 
 api.get('/*', site.notAnEndpoint);
 
-module.exports = api;
+export default api;

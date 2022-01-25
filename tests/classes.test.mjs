@@ -1,7 +1,7 @@
-const { request, expect } = require("./config");
+import { request, expect } from './config.mjs';
 
 describe("GET /classes/", () => {
-    it("Returns an array of classes objects.", async () => {
+    it("Returns an array of classes objects.", async function() {
         const response = await request.get("/classes");
 
         expect(response.statusCode).to.eql(200);

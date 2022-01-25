@@ -198,5 +198,4 @@ const getScheduleForWeek = (htmlDocument, weekNumber) => {
     return weekSchedule;
 };
 
-
-module.exports = { getScheduleForDay, getScheduleForWeek };
+export default { getScheduleForDay, getScheduleForWeek };

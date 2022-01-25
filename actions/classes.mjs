@@ -22,4 +22,4 @@ const list = (req, res) => {
     }
 };
 
-module.exports = { list };
+export default { list };
